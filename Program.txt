@@ -1,0 +1,44 @@
+﻿using System;
+using System.IO;
+using System.Net;
+
+namespace JH_Assessment
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string feedOutput = GetFeed();
+            Console.WriteLine(feedOutput);
+            Console.ReadLine();
+        }
+        //BS; Initial step in this process is to get the twitter feed
+        private static string GetFeed()
+        {
+            WebRequest getTweets = WebRequest.Create("https://api.twitter.com/2/tweets/sample/stream?tweet.fields=created_at&expansions=author_id&user.fields=created_at") as HttpWebRequest;
+
+            getTweets.Method = "GET";
+            getTweets.Headers[HttpRequestHeader.Authorization] = "Bearer " + "AAAAAAAAAAAAAAAAAAAAANW4MwEAAAAAVFjmGsU1umhADmwckAPuY0V5wuI%3DxhMRrQWC9Bqm1Y3f5PnICteNYGFwYr74BZK1KzowA3EUO3fV3A"; 
+            try
+            {
+                string respbody = null;
+                //BS; In the GetResponse()function the resp stream is returning 4 errors
+                using (Stream resp = getTweets.GetResponse().GetResponseStream())
+                {
+                    StreamReader respR = new StreamReader(resp);
+                    respbody = respR.ReadToEnd();
+                    return respbody;
+                }
+
+            }
+            catch (Exception ex) //401 (access token invalid or expired)
+            {
+                //TODO
+                return ex.ToString();
+            }
+
+        }
+
+    }
+
+}
